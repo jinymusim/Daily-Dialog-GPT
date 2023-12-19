@@ -1,11 +1,14 @@
 from transformers import  AutoTokenizer, AutoModelForCausalLM, SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5HifiGan, PreTrainedTokenizer, PreTrainedModel
 from diffusers import StableDiffusionPipeline
 from utils.dialog_utils import Tokens
+from playsound import playsound
 import datasets
 import torch
 import argparse
+import os
 import soundfile as sf
-import re
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 parser = argparse.ArgumentParser()
 
@@ -81,10 +84,14 @@ class DialogSystem:
             speech = self.voice_model.generate_speech(input_voc["input_ids"],self.speaker_embed, vocoder=self.voice_vocoder)
         
             sf.write("ds_test.wav", speech.numpy(), samplerate=16000)
+            playsound("ds_test.wav")
+            os.remove("ds_test.wav")
             
         if self.diff_model != None:
             image = self.diff_model(decoded_response).images[0]
-            image.save("ds_test.png")
+            plt.imshow(image)
+            plt.show()  
+            
             
         self.sys_token_count +=1
         
@@ -101,7 +108,7 @@ def main(args: argparse.Namespace):
         voice_vocoder = SpeechT5HifiGan.from_pretrained(args.voice_vocoder_path)
     
         embeddings_dataset = datasets.load_dataset("Matthijs/cmu-arctic-xvectors", split="validation")
-        speaker_embeddings = torch.tensor(embeddings_dataset[3000]["xvector"]).unsqueeze(0)
+        speaker_embeddings = torch.tensor(embeddings_dataset[1000]["xvector"]).unsqueeze(0)
     stable_diff  = None
     if args.use_image: 
         stable_diff = StableDiffusionPipeline.from_pretrained(args.stable_diff_model, torch_dtype=torch.float16)

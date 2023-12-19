@@ -6,3 +6,6 @@ datasets
 soundfile
 diffusers
 accelerate
+matplotlib
+playsound
+sentencepiece
