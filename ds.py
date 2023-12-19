@@ -74,6 +74,7 @@ class DialogSystem:
         
         decoded_response = self.tokenizer.decode(out_response[0], skip_special_tokens=False)
         decoded_response = decoded_response.split(Tokens.SYSTEM)[-1].split(self.tokenizer.eos_token)[0].strip() if decoded_response.count(Tokens.SYSTEM) <= self.sys_token_count else decoded_response.split(Tokens.SYSTEM)[self.sys_token_count + 1].split(self.tokenizer.eos_token)[0].strip()
+        decoded_response = decoded_response.split(Tokens.USER)[0].strip() if Tokens.USER in decoded_response else decoded_response
         
         if self.voice_model != None:
             input_voc = self.voice_preprocess(text=decoded_response, return_tensors='pt')
