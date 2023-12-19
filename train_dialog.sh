@@ -6,4 +6,4 @@ pip install --target=$SCRATCHDIR torch torchvision torchaudio --index-url https:
 pip install --target=$SCRATCHDIR -r /storage/brno2/home/chudobm/Daily-Dialog-GPT/requirements.txt
 export PYTHONPATH="${PYTHONPATH}:${TMPDIR}"
 cd /storage/brno2/home/chudobm/Daily-Dialog-GPT
-python3 train_dialog.py
+python3 finetune_torch.py
